@@ -1,0 +1,23 @@
+export default function handler(req, res) {
+  const { args } = req.body;
+  const { job_type, style = "unknown", size = "unknown" } = args || {};
+
+  const quotes = {
+    broken_window: { small: "$150–$250", medium: "$250–$400", large: "$400–$700", unknown: "$150–$500" },
+    shower_screen: { framed: "$400–$700", semi_frameless: "$700–$1,100", frameless: "$900–$1,500", unknown: "$400–$1,500" },
+    splashback: { small: "$300–$500", medium: "$500–$900", large: "$900–$1,500", unknown: "$300–$1,200" },
+    shopfront: { small: "$500–$800", medium: "$800–$1,200", large: "$1,200–$3,000+", unknown: "$500–$2,000+" },
+    balustrade: { semi_frameless: "$250–$350 per metre", frameless: "$300–$450 per metre", unknown: "$250–$450 per metre" },
+    pool_fencing: { semi_frameless: "$180–$280 per metre", frameless: "$280–$400 per metre", unknown: "$180–$400 per metre" },
+    double_glazing: { small: "$800–$1,200 per window", medium: "$1,200–$1,800 per window", large: "$1,800–$2,500+ per window", unknown: "$800–$2,000+ per window" },
+    mirror: { small: "$150–$300", medium: "$300–$600", large: "$600–$1,200", unknown: "$150–$800" }
+  };
+
+  const jobData = quotes[job_type];
+  if (!jobData) {
+    return res.json({ estimate: "We'd need to send a glazier out to quote that one accurately.", disclaimer: "The glazier will confirm exact pricing on the day." });
+  }
+
+  const estimate = jobData[style] || jobData[size] || jobData["unknown"];
+  res.json({ estimate, disclaimer: "That's a rough guide only — the glazier will confirm exact pricing on the day." });
+}
